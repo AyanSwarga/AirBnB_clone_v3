@@ -34,6 +34,10 @@ class FileStorage:
             return new_dict
         return self.__objects
 
+    def count(self, cls=None):
+        """ Counts the number of instances per class """
+        return len(self.all(cls))
+
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
         if obj is not None:
@@ -64,6 +68,18 @@ class FileStorage:
             key = obj.__class__.__name__ + '.' + obj.id
             if key in self.__objects:
                 del self.__objects[key]
+
+    def get(self, cls, id):
+        """ Method to get individual instances by class name and ID """
+        instance = '{}.{}'.format(cls.__name__, id)
+        if cls is not None:
+            cls_group = self.all(cls)
+            for key in cls_group.keys():
+                if key == instance:
+                    return cls_group[key]
+                else:
+                    return None
+        return None
 
     def close(self):
         """call reload() method for deserializing the JSON file to objects"""

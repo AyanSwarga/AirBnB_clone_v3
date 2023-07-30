@@ -51,6 +51,10 @@ class DBStorage:
                     new_dict[key] = obj
         return (new_dict)
 
+    def count(self, cls=None):
+        """ Counts the number of instances per class """
+        return len(self.all(cls))
+
     def new(self, obj):
         """add the object to the current database session"""
         self.__session.add(obj)
@@ -70,6 +74,17 @@ class DBStorage:
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)
         self.__session = Session
+
+    def get(self, cls, id):
+        """ Method to get individual instances by class name and ID """
+        instance = '{}.{}'.format(cls.__name__, id)
+        if cls is not None:
+            cls_group = self.all(cls)
+            for key in cls_group.keys():
+                if key == instance:
+                    return cls_group[key]
+                return None
+        return None
 
     def close(self):
         """call remove() method on the private session attribute"""
