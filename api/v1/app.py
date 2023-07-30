@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """ AirBnB API """
-from flask import Flask
+from flask import Flask, jsonify, make_response
 from models import storage
 from api.v1.views import app_views
 from os import getenv
@@ -15,6 +15,11 @@ app.register_blueprint(app_views)
 def close_storage(obj):
 	""" Closes storage after usage """
 	storage.close()
+
+@app.errorhandler(404)
+def err404(err):
+	""" Error message to return """
+	return make_response(jsonify({"error": "Not found"}), 404)
 
 
 if __name__ == '__main__':
